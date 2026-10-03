@@ -1,6 +1,9 @@
 package com.springboot.controller;
 
+import com.springboot.dto.MemberDto;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/get-apt")
@@ -29,5 +32,20 @@ public class ApiController {
     public String getRequestParam2(@RequestParam String name,@RequestParam String email,
                                   @PathVariable("organization") String com) {
         return name +  '|' + email +  '|' + com;
+    }
+
+    @GetMapping(value="/request3")
+    public String getRequestParam3(@RequestParam
+    Map<String,String> param) {
+    StringBuilder sb=new  StringBuilder();
+    param.entrySet().forEach(map ->{
+        sb.append(map.getKey() + ":" + map.getValue() + "\n");
+        });
+      return  sb.toString();
+    }
+
+    @GetMapping(value="/request4")
+    public String getRequestParam4(MemberDto memberDto) {
+        return memberDto.toString();
     }
 }
