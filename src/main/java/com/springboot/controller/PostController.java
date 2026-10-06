@@ -61,4 +61,9 @@ public class PostController {
 
     }
 
+    @DeleteMapping(value="/{variable}")
+    public String delete(@PathVariable String variable) {
+        return variable;
+    }
+
 }
