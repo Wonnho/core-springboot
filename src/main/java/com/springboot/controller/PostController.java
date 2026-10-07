@@ -1,6 +1,8 @@
 package com.springboot.controller;
 
 import com.springboot.dto.MemberDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,11 +13,16 @@ import java.util.Map;
 @RequestMapping("/api/v1/post-api")
 public class PostController {
 
+    private final Logger LOGGER= LoggerFactory.getLogger(PostController.class);
+
+
     @RequestMapping(value="/domain", method= RequestMethod.POST)
     public String  post(){
+        LOGGER.info("call post method");
         return "Hello POST API";
 
     }
+
 
     @PostMapping(value="/member")
     public String postMember(@RequestBody Map<String,Object> postData) {
@@ -66,4 +73,10 @@ public class PostController {
         return variable;
     }
 
+
+    @GetMapping(value="/variable1/{variable}")
+    public String getVariable1(@PathVariable String variable) {
+        LOGGER.info("value through @PathVariable : {}",variable);
+        return variable;
+    }
 }
