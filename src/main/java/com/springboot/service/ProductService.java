@@ -2,6 +2,7 @@ package com.springboot.service;
 
 import com.springboot.dto.ProductDto;
 import com.springboot.dto.ProductResponseDto;
+import com.springboot.entity.Products;
 
 public interface ProductService {
 
