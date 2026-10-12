@@ -7,6 +7,7 @@ import com.springboot.entity.Products;
 import com.springboot.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,7 +50,7 @@ public class ProductServiceImpl implements ProductService {
         Products saved=productDAO.insertProduct(product);
 
     ProductResponseDto   response=new ProductResponseDto();
-        response.setProductNo(product.getProductNo());
+        response.setProductNo(saved.getProductNo());
         response.setProductName(product.getProductName());
         response.setPrice(product.getPrice());
         response.setInventory(product.getInventory());
@@ -72,7 +73,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long productNo) throws Exception {
+    public void deleteProduct( Long productNo) throws Exception {
                       productDAO.deleteProduct(productNo);
+
     }
 }
