@@ -2,6 +2,7 @@ package com.springboot.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 @Table(name="product")
 @Setter
 @Getter
+@ToString
 public class Products {
 
     @Id
