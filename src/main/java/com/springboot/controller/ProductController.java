@@ -19,14 +19,13 @@ public class ProductController {
     @Autowired
    private ProductService productService;
 
-    //          //retrieve all products
+    @GetMapping("/api/search")
+    public List<ProductResponseDto> retrieveByName(
+            @RequestParam String productName
+    ) {
+        return productService.getProductsByName(productName);
+    }
 
-//    @GetMapping("/api")
-//    public List<ProductResponseDto> retrieve() {
-//        Products products=productService.retrieveAll();
-//
-//        return ProductResponseDto;
-//    }
 
     @GetMapping("/api/{productNo}")
     public ProductResponseDto retrieve(@PathVariable("productNo") Long productNo) {
@@ -51,6 +50,7 @@ public class ProductController {
     return ResponseEntity.status(HttpStatus.OK).body(changed);
     }
 
+    @Transactional
     @DeleteMapping("/api")
        public void deleteProduct(
             @RequestParam("productNo") Long productNo) throws Exception {

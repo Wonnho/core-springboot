@@ -16,77 +16,117 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <!-- Java version used by the compiler and Spring Boot plugins. -->
+        <java.version>11</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- QueryDSL 5 still supports javax.persistence used by Spring Boot 2.7. -->
+        <querydsl.version>5.0.0</querydsl.version>
+
+        <!-- Springfox version used by the existing Swagger configuration. -->
+        <springfox.version>2.9.2</springfox.version>
     </properties>
 
     <dependencies>
+        <!-- Spring MVC, embedded Tomcat, and JSON serialization with Jackson. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
+        <!-- JPA, Hibernate, Spring Data repositories, and transaction support. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
+        <!-- MySQL JDBC driver. This project does not use the MariaDB driver. -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.mariadb.jdbc</groupId>-->
-<!--            <artifactId>mariadb-java-client</artifactId>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
-
-
+        <!-- Generates getters, setters, constructors, and other boilerplate. -->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
 
+        <!-- Type-safe JPA query API used with generated Q classes. -->
         <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>${querydsl.version}</version>
         </dependency>
 
-
+        <!-- Annotation processor that generates Q classes from JPA entities. -->
         <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger2</artifactId>
-                <version>2.9.2</version>
-            </dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <version>${querydsl.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
-            <dependency>
-                <groupId>io.springfox</groupId>
-                <artifactId>springfox-swagger-ui</artifactId>
-                <version>2.9.2</version>
-            </dependency>
+        <!-- Swagger 2 documentation support used by SwaggerConfiguration. -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
 
-
+        <!-- Generates metadata for custom @ConfigurationProperties classes. -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
+
+        <!-- JUnit, Spring Test, Mockito, AssertJ, and other test utilities. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!-- Packages and runs this project as a Spring Boot application. -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Runs QueryDSL's JPA annotation processor during compilation. -->
+            <plugin>
+                <groupId>com.mysema.maven</groupId>
+                <artifactId>apt-maven-plugin</artifactId>
+                <version>1.1.3</version>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>process</goal>
+                        </goals>
+
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/generated-sources/querydsl
+                            </outputDirectory>
+                            <!-- Generates QProducts from the Products @Entity class. -->
+                            <processor>
+                                com.querydsl.apt.jpa.JPAAnnotationProcessor
+                            </processor>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

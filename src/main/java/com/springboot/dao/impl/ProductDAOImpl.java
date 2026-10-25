@@ -6,6 +6,7 @@ import com.springboot.repository.ProductRepository;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -17,7 +18,11 @@ public class ProductDAOImpl implements ProductDAO {
         this.productRepository = productRepository;
     }
 
-
+    @Override
+    public List<Products> selectProductsByName(String productName) {
+        return productRepository
+                .findByProductNameOrderByProductNoAsc(productName);
+    }
     @Override
     public Products insertProduct(Products products) {
         Products saveProduct=productRepository.save(products);

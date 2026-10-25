@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -22,6 +24,28 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     public ProductServiceImpl(ProductDAO productDAO) {
         this.productDAO = productDAO;
+    }
+    @Override
+    public List<ProductResponseDto> getProductsByName(
+            String productName
+    ) {
+        List<Products> products =
+                productDAO.selectProductsByName(productName);
+
+        return products.stream()
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    private ProductResponseDto toResponse(Products product) {
+        ProductResponseDto response = new ProductResponseDto();
+
+        response.setProductNo(product.getProductNo());
+        response.setProductName(product.getProductName());
+        response.setPrice(product.getPrice());
+        response.setInventory(product.getInventory());
+
+        return response;
     }
 
     @Override
