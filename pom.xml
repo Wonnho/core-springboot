@@ -25,6 +25,12 @@
 
         <!-- Springfox version used by the existing Swagger configuration. -->
         <springfox.version>2.9.2</springfox.version>
+
+        <!-- JaCoCo code-coverage configuration. -->
+        <jacoco.version>0.8.15</jacoco.version>
+
+        <!-- Initial baseline; increase after reviewing the first report. -->
+        <jacoco.minimum.line.coverage>0.00</jacoco.minimum.line.coverage>
     </properties>
 
     <dependencies>
@@ -94,6 +100,13 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -124,6 +137,82 @@
                             <processor>
                                 com.querydsl.apt.jpa.JPAAnnotationProcessor
                             </processor>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--
+    JaCoCo attaches an agent to the test JVM, records executed code,
+    generates coverage reports, and checks the coverage threshold.
+-->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+
+                <executions>
+                    <!-- Attach the JaCoCo agent before Maven runs tests. -->
+                    <execution>
+                        <id>prepare-jacoco-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>
+                                ${project.build.directory}/jacoco.exec
+                            </destFile>
+                        </configuration>
+                    </execution>
+
+                    <!-- Generate HTML, XML, and CSV reports during verify. -->
+                    <execution>
+                        <id>generate-jacoco-report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>
+                                ${project.build.directory}/jacoco.exec
+                            </dataFile>
+
+                            <outputDirectory>
+                                ${project.reporting.outputDirectory}/jacoco
+                            </outputDirectory>
+
+                            <!-- Generated QueryDSL classes are not application logic. -->
+                            <excludes>
+                                <exclude>**/Q*.class</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+
+                    <!-- Enforce the configured line-coverage minimum. -->
+                    <execution>
+                        <id>check-jacoco-coverage</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <dataFile>
+                                ${project.build.directory}/jacoco.exec
+                            </dataFile>
+
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>
+                                                ${jacoco.minimum.line.coverage}
+                                            </minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
                         </configuration>
                     </execution>
                 </executions>
